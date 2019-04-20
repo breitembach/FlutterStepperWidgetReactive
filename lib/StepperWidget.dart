@@ -9,6 +9,7 @@ class StepperWidget extends StatefulWidget {
   final String nameBtnContinue;
   final String nameBtnBack;
   final String nameBtnFinished;
+  
   StepperWidget({
     @required this.steps, 
     this.nameBtnContinue = "Continuar",
@@ -24,10 +25,6 @@ class StepperWidget extends StatefulWidget {
 class StepperWidgetState extends State<StepperWidget> {
   final BehaviorSubject<int> _stepController = BehaviorSubject(seedValue: 0);
   
-  @override
-  void initState() {
-    super.initState();
-  }
   @override
   void dispose() {
     _stepController.close();
@@ -62,22 +59,8 @@ class StepperWidgetState extends State<StepperWidget> {
               );
             },
             onStepTapped: _stepController.sink.add,
-            onStepCancel: () {
-              if (snap.data > 0) {
-                _stepController.add(snap.data-1);
-              } else {
-                _stepController.add(0);
-              }
-            },
-            onStepContinue: () {
-              setState(() {
-                if (snap.data < widget.steps.length-1) {
-                  _stepController.add(snap.data+1);
-                } else {
-                  _stepController.add(0);
-                }
-              });
-            },
+            onStepCancel: () => snap.data > 0 ? _stepController.add(snap.data-1) : _stepController.add(0),
+            onStepContinue: () => snap.data < widget.steps.length-1 ? _stepController.add(snap.data+1) : _stepController.add(0),
           );
           return Text("");
         }
